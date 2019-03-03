@@ -1,0 +1,113 @@
+---
+title: "Coursera Data Science Capstone - Week 2 Milestone Report"
+author: "Vincent"
+date: "March 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This report explores the data that we will use to build a predictive text analytics model. This data is provided by Swiftkey, a company that builds a smart keyboard that makes it easier for people to type on their mobile device.
+Swiftkey, Predictive text analytics. The data is from a corpus called HC Corpora. Our goal is to transform a corpus of text in a text prediction program.
+
+In order to do so, we will have to follow several steps:
+
+- Tokenization
+- Handle punctualtion
+- Handle digits
+- Handle case (upper/lower)
+- Handle wrong spelling
+- Filter Profanity
+
+The first step, however, is to load the data and perform explore basic indicators like word count, line count and simple plots/
+
+## Downloading the training dataset
+
+```{r, cache = TRUE}
+DataURL <- "https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip"
+DataFile <- "Coursera-SwiftKey.zip"
+if (!file.exists(DataFile)) {
+  download.file(DataURL, destfile = DataFile)
+  unzip(DataFile)
+}
+```
+
+## Load useful libraries
+```{r}
+library(stringi)
+library(ggplot2)
+```
+
+## Loading the English data in
+
+### Blog data
+
+```{r, warning=FALSE}
+en_blog <- readLines("final/en_US/en_US.blogs.txt")
+stri_stats_general(en_blog)
+en_blog_words <- stri_count_words(en_blog)
+summary(en_blog_words)
+qplot(en_blog_words, main = "English Blog Word Count", bins = 20) + scale_x_log10() 
+```
+
+### News data
+
+```{r, warning=FALSE}
+en_news <- readLines("final/en_US/en_US.news.txt")
+stri_stats_general(en_news)
+en_news_words <- stri_count_words(en_news)
+summary(en_news_words)
+qplot(en_news_words, main = "English News Word Count", bins = 20) + scale_x_log10()
+```
+
+### Twitter data
+
+```{r, warning=FALSE}
+en_twitter <- readLines("final/en_US/en_US.twitter.txt")
+stri_stats_general(en_twitter)
+en_twitter_words <- stri_count_words(en_twitter)
+summary(en_twitter_words)
+qplot(en_twitter_words, main = "English Twitter Word Count", bins = 20)
+```
+
+Regarding twitter data, unlike blog and news data, the work count is more limited, probably because os the 140 character limit in a tweet.
+
+## Word frequency for twitter data
+
+### Step 1 - Clean and tokenize
+
+```{r}
+# Remove punctuation and special characters 
+words <- gsub("#|\\?|;|!|:|\\)|\\(|\\.|&|,", "", en_twitter)
+words <- trimws(words)
+
+# convert to lower case
+words <- tolower(words)
+
+# Isolate single words
+words <- unlist(strsplit(words, "\\s"))
+
+freq <- data.frame(table(words))
+freq <- freq[freq$words != "",]
+freq <- freq[order(-freq$Freq),]
+
+top <- head(freq, 30)
+top$words <- factor(top$words, levels = top$words[order(-top$Freq)])
+
+ggplot(top, aes(top$words, top$Freq)) + geom_bar(stat='identity') + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + labs(title = "Top 30 words in english twitter data", x = "Word", y = "Frequency")
+```
+
+
+## Conclusion
+
+A first exploration of the blog, news and twitter data for the english language show that, even if these files have a similar size, more lines are included in the twitter data because each tweet is limited to 140 characters and is usually smaller than a blog post or a news item.
+We also performed a basic text cleaning and tokenization to display the top 30 words in the twitter data, which happen to be mostly stop words. Unlike in other natural language processing application, we must not filter out stop words because predicting one is very likely given their frequency.
+
+## Next steps
+
+The next steps will be to transform this data (tokenisation, profanity filtering, punctuation removal, etc.) and use it to build a predictive algorithm able to predict the next word form the 1, 2 or three previous words.
+This algorithm will then be integrated in a Shiny application, evaluated, published and described.
