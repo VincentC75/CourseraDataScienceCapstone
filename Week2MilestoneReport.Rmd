@@ -11,8 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This report explores the data that we will use to build a predictive text analytics model. This data is provided by Swiftkey, a company that builds a smart keyboard that makes it easier for people to type on their mobile device.
-Swiftkey, Predictive text analytics. The data is from a corpus called HC Corpora. Our goal is to transform a corpus of text in a text prediction program.
+This report explores the data that we will use to build a predictive text analytics model. This data is provided by Swiftkey, a company that builds a smart keyboard that makes it easier for people to type on their mobile device. 
+The data is from a corpus called HC Corpora. Our goal is to transform a corpus of text in a text prediction program.
 
 In order to do so, we will have to follow several steps:
 
@@ -23,7 +23,7 @@ In order to do so, we will have to follow several steps:
 - Handle wrong spelling
 - Filter Profanity
 
-The first step, however, is to load the data and perform explore basic indicators like word count, line count and simple plots/
+The first step, however, is to load the data and perform explore basic indicators like word count, line count and simple plots.
 
 ## Downloading the training dataset
 
@@ -104,8 +104,8 @@ ggplot(top, aes(top$words, top$Freq)) + geom_bar(stat='identity') + theme(axis.t
 
 ## Conclusion
 
-A first exploration of the blog, news and twitter data for the english language show that, even if these files have a similar size, more lines are included in the twitter data because each tweet is limited to 140 characters and is usually smaller than a blog post or a news item.
-We also performed a basic text cleaning and tokenization to display the top 30 words in the twitter data, which happen to be mostly stop words. Unlike in other natural language processing application, we must not filter out stop words because predicting one is very likely given their frequency.
+A first exploration of the blog, news and twitter data for the english language shows that, even if these files have a similar size, more lines are included in the twitter data because each tweet is limited to 140 characters and is usually smaller than a blog post or a news item.
+We also performed a basic text cleaning and tokenization to display the top 30 words in the twitter data, which happen to be mostly stop words. Unlike in other natural language processing applications, we must not filter out stop words because predicting one is very likely given their frequency.
 
 ## Next steps
 
