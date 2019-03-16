@@ -1,5 +1,7 @@
 # PredictNextWord
 
+library(dplyr)
+
 # Load saved data
 unigrams <- readRDS("unigrams.RData")
 bigrams <- readRDS("bigrams.RData")
@@ -19,8 +21,8 @@ PredictNextWord <- function(prevwords) {
   prevwords <- CleanInput(prevwords)
   startwords <- unlist(strsplit(prevwords, split = ' '))
   
-  # last resort if no match found: predict the 3 most common unigrams
-  prediction <- head(unigrams,3)
+  # last resort if no match found: predict the 5 most common unigrams
+  prediction <- head(unigrams,5)
   prediction$Matched <- 0
     
   l <- length(startwords)
@@ -35,7 +37,7 @@ PredictNextWord <- function(prevwords) {
         candidate$Word <- candidate$Word6
         candidate$Word6 <- NULL
         candidate$Matched <- 5
-        candidate <- head(candidate, 3)
+        candidate <- head(candidate, 5)
         prediction <- rbind(prediction, candidate)
       }
   }
@@ -49,7 +51,7 @@ PredictNextWord <- function(prevwords) {
       candidate$Word <- candidate$Word5
       candidate$Word5 <- NULL
       candidate$Matched <- 4
-      candidate <- head(candidate, 3)
+      candidate <- head(candidate, 5)
       prediction <- rbind(prediction, candidate)
     }
   }
@@ -62,7 +64,7 @@ PredictNextWord <- function(prevwords) {
       candidate$Word <- candidate$Word4
       candidate$Word4 <- NULL
       candidate$Matched <- 3
-      candidate <- head(candidate, 3)
+      candidate <- head(candidate, 5)
       prediction <- rbind(prediction, candidate)
     }
   }
@@ -74,7 +76,7 @@ PredictNextWord <- function(prevwords) {
       candidate$Word <- candidate$Word3
       candidate$Word3 <- NULL
       candidate$Matched <- 2
-      candidate <- head(candidate, 3)
+      candidate <- head(candidate, 5)
       prediction <- rbind(prediction, candidate)
     }
   }
@@ -85,11 +87,10 @@ PredictNextWord <- function(prevwords) {
       candidate$Word <- candidate$Word2
       candidate$Word2 <- NULL
       candidate$Matched <- 1
-      candidate <- head(candidate, 3)
+      candidate <- head(candidate, 5)
       prediction <- rbind(prediction, candidate)
     }
   }
-#  prediction %>% arrange(-Matched, -Freq) %>% head(3) %>% select(Word)
-  prediction %>% arrange(-Matched, -Freq) %>% group_by(Word) %>% summarise(Matched = max(Matched), Freq = first(Freq)) %>% arrange(-Matched, -Freq) %>% select(Word) %>% head(3) %>% unlist()
+  prediction %>% arrange(-Matched, -Freq) %>% group_by(Word) %>% summarise(Matched = max(Matched), Freq = first(Freq)) %>% arrange(-Matched, -Freq) %>% select(Word) %>% head(5) %>% unlist()
 }
 
