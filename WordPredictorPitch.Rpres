@@ -1,0 +1,48 @@
+Natural Language Processing - Word Predictor
+========================================================
+author: Vincent
+date: March 2019
+width: 1200
+height: 900
+transition: rotate
+
+Summary
+========================================================
+
+This project explores Natural Language Processind by building a text prediction application. Our initial data is provided by SwitKey (available [here](https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip)) consists of text from collected from different sources like news, blogs or twitter. We clean and process this data and build an algorithm to predict the next word from a text input. This work is finally published in the form of a Shiny application that demonstrates our results.
+
+![nlp](nlp.jpg)
+
+Building n-grams
+========================================================
+
+After loading and cleaning the data, the main processing step is to build [n-grams](https://en.wikipedia.org/wiki/N-gram) that store which words usually come together.
+
+```{r, echo=FALSE}
+source("PredictNextWord.R")
+head(hexagrams)
+```
+
+This step was highly simplified by the us of the [quanteda library](https://cran.r-project.org/web/packages/quanteda/index.html). This processing step takes some time and requires memory, but once the data is summarised in n-grams its size is limited which allows for fast processing. The pre-processed data is simply loaded by our shiny application.
+
+Prediction Algorithm
+========================================================
+
+The logic behind the prediction algorithm is to search in all n-grams (1-gram to 6-gram) what is the next word with the most probability. The predictions are sorted and those from the longest n-grams are prefered and displayed in priority. 5 predictions are computed for each input string.
+
+```{r, echo=TRUE}
+#source("PredictNextWord.R")
+PredictNextWord("It was by far the")
+PredictNextWord("At the end of the")
+```
+
+
+Shiny Application
+========================================================
+
+The resulting application is available [here](https://vincentc75.shinyapps.io/CourseraDataScienceCapstone/)
+
+![ShinyApp](ShinyApp.png)
+
+The interface is minimalist. Once a few words are entered in the input box, the next word is predicted. The application displays its best guess but also 4 other alternatives.
+The computation is fast so it was not necessary to use an Apply button. The text input is processed as it is entered.
