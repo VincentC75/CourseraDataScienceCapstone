@@ -26,7 +26,7 @@ en_corpus <- corpus(en_text)
 unigrams <- dfm(en_corpus, ngrams = 1, concatenator = " ",remove_punct=TRUE, tolower=TRUE, remove_twitter=TRUE)
 unigrams <- as.data.frame(as.matrix(docfreq(unigrams)))
 names(unigrams) <- c("Freq")
-unigrams$word <- rownames(unigrams)
+unigrams$Word <- rownames(unigrams)
 unigrams <- unigrams %>% arrange(-Freq) %>% filter(Freq > 5)
 saveRDS(unigrams,"unigrams.RData")
 rm(unigrams)
@@ -44,7 +44,8 @@ rm(bigrams)
 # Trigrams
 # All data cannot be used for trigrams, a sample must be used instead of the entire dataset
 set.seed(1971)
-en_corpus_sampled <- corpus(sample(en_text, length(en_text) * 0.3))
+en_corpus_sampled <- corpus(sample(en_text, length(en_text) * 0.6
+                                   ))
 trigrams <- dfm(en_corpus_sampled, ngrams = 3, concatenator = " ",remove_punct=TRUE, tolower=TRUE, remove_twitter=TRUE)
 trigrams <- as.data.frame(as.matrix(docfreq(trigrams)))
 names(trigrams) <- c("Freq")
@@ -74,6 +75,16 @@ pentagrams <- pentagrams %>% separate(words, c("Word1", "Word2", "Word3", "Word4
 saveRDS(pentagrams,"pentagrams.RData")
 rm(pentagrams)
 
+# Hexagrams
+hexagrams <- dfm(en_corpus_sampled, ngrams = 6, concatenator = " ",remove_punct=TRUE, tolower=TRUE, remove_twitter=TRUE)
+hexagrams <- as.data.frame(as.matrix(docfreq(hexagrams)))
+names(hexagrams) <- c("Freq")
+hexagrams$words <- rownames(hexagrams)
+hexagrams <- hexagrams %>% arrange(-Freq) %>% filter(Freq > 5)
+hexagrams <- hexagrams %>% separate(words, c("Word1", "Word2", "Word3", "Word4", "Word5", "Word6"), ' ')
+saveRDS(hexagrams,"hexagrams.RData")
+rm(hexagrams)
+
 
 # Load saved data
 rm(en_corpus)
@@ -82,4 +93,5 @@ unigrams <- readRDS("unigrams.RData")
 bigrams <- readRDS("bigrams.RData")
 trigrams <- readRDS("trigrams.RData")
 quadrigrams <- readRDS("quadrigrams.RData")
-pentaframs <- readRDS("pentagrams.RData")
+pentagrams <- readRDS("pentagrams.RData")
+hexagrams <- readRDS("hexagrams.RData")
